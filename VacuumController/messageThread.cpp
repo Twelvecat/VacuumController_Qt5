@@ -14,7 +14,7 @@ void MessageThread::run(void)
     // 循环
     while(1)
     {
-        extract_command();
+        extract_command(&QtSystem);
     }
     // 发送结束信号
     qDebug() << "\tFinish the work and sent the result Ready signal\n" ;

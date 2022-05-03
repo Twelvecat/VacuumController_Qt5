@@ -3,8 +3,9 @@
 
 uint16_t StartNum=0,TalNum=0;
 uint8_t CommBuff[BUFFER_SIZE];//定义指令缓冲区
+uint8_t TxBuff_8309[9] = {USER_R3, USER_RA, 0x06, variable_read, 0x00, 0x00, 0x01, 0x00, 0x00};
 
-void extract_command(void)
+void extract_command(VacuumController *QtSystem)
 {
     uint16_t i,CurNum,tem_TalNum;
     uint8_t CmdBuf[256];
@@ -89,7 +90,7 @@ void extract_command(void)
             break;
         case variable_write:
         {
-             qDebug() << "处理成功";//处理
+            TOUCH_deal_82command(QtSystem,CmdBuf);
             break;
         }
         case variable_read:
@@ -103,4 +104,67 @@ void extract_command(void)
             break;
     }
     return;
+}
+
+
+void TOUCH_deal_82command(VacuumController *QtSystem, uint8_t *p_Cmdbuf)
+{
+    if(QtSystem->system_status.current == 6) return;
+    uint8_t data_len = p_Cmdbuf[2];
+    if(data_len != 5) return;
+    uint16_t command_adds = ((uint16_t)p_Cmdbuf[4] << 8) | ((uint16_t)p_Cmdbuf[5]); //指令地址
+    uint16_t temp_data = ((uint16_t)p_Cmdbuf[7] << 6) | ((uint16_t)p_Cmdbuf[7]);
+    if(UIaddr_hp5806_B_pres == command_adds)
+    {
+        QtSystem->hp5806_B.Pcomp = (float)(temp_data/10.0);
+    }
+    else if(UIaddr_hp5806_A_pres == command_adds)
+    {
+        QtSystem->hp5806_A.Pcomp = (float)(temp_data/10.0);
+    }
+    else if(UIaddr_hp5806_B_temp == command_adds)
+    {
+        QtSystem->hp5806_B.Tcomp = (float)(temp_data/10.0);
+    }
+    else if(UIaddr_hp5806_A_temp == command_adds)
+    {
+        QtSystem->hp5806_A.Tcomp = (float)(temp_data/10.0);
+    }
+    else if(UIaddr_set_pres == command_adds)
+    {
+        QtSystem->set_value = (float)(temp_data/10.0);
+    }
+    else if(UIaddr_current_pres == command_adds)
+    {
+        QtSystem->current_pres = (float)(temp_data/10.0);
+    }
+    else if(UIaddr_relay_status == command_adds)
+    {
+        QtSystem->relay_A.status = (temp_data & 0x0002) > 1;
+        QtSystem->relay_B.status = (temp_data & 0x0001);
+    }
+    else if(UIaddr_hour == command_adds)
+    {
+        QtSystem->time.hour = temp_data;
+    }
+    else if(UIaddr_min == command_adds)
+    {
+        QtSystem->time.min = temp_data;
+    }
+    else if(UIaddr_sec == command_adds)
+    {
+        QtSystem->time.sec = temp_data;
+    }
+    else if(UIaddr_setting_sec == command_adds)
+    {
+        QtSystem->time.setting_sec = temp_data;
+    }
+    else if(UIaddr_remainder_sec == command_adds)
+    {
+        QtSystem->time.remainder_sec = temp_data;
+    }
+    else if(UIaddr_pump_status == command_adds)
+    {
+        QtSystem->pump.status = temp_data;
+    }
 }
