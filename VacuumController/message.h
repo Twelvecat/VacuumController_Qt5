@@ -55,6 +55,10 @@ typedef unsigned           int uint32_t;
 #define UIaddr_manual_continue 0x0003
 #define UIaddr_stop 0x0022
 
+// 状态，伪造，注意冲突
+#define System_status 0x003D
+#define Output_status 0x013D
+
 // 变量图标 - WiFi暂未启用，emm没啥意义
 #define UIaddr_pump_status 0x003E
 #define UIaddr_pump_off 0x0000

@@ -36,11 +36,11 @@ struct _relay{
 
 struct _time{
     unsigned char flag_time;
-    unsigned char hour;
+    unsigned short int hour;
     unsigned char min;
     unsigned char sec;
-    unsigned char setting_sec;
-    unsigned char remainder_sec;
+    short int setting_sec;
+    short int remainder_sec;
 };
 
 struct _system_status{
@@ -56,12 +56,14 @@ public:
     void Init(void);
     void SetValue(float value);
     void SetPWM(float value);
-    void SetTimeSec(float value);
+    void SetTimeSec(int value);
     void OpenOrCloseRelay(bool isOpen, int id);
     void ImportConf(void);
     void ExportConf(void);
     void Sync(void);
     void linkTcp(QTcpSocket *socket);
+    void Run(int);
+    void Stop(void);
 
 
     struct _pump pump;		//创建一个泵

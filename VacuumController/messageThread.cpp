@@ -10,7 +10,6 @@ void MessageThread::run(void)
 {
     qDebug() << "receive the execute signal" ;
     qDebug() << "\tCurrent thread ID: " << QThread::currentThreadId();
-
     // 循环
     while(1)
     {

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+
+<head>
+    <meta charset="utf-8" />
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="echarts.js"></script>
+</head>
+
+<body style="height: 100%; margin: 0">
+    <div id="container" style="width: 800px;height: 600px;"></div>
+    <script type="text/javascript">
+        var dom = document.getElementById('container');
+        var myChart = echarts.init(dom, 'dark', {
+            renderer: 'svg',
+            useDirtyRect: false
+        });
+        var app = {};
+
+        var option;
+
+        const colors = ['#ACDFED', '#f7f494', '#FFAB91'];
+        const categories = (function () {
+            let now = new Date();
+            let res = [];
+            let len = 10;
+            while (len--) {
+                res.unshift(now.toLocaleTimeString('chinese',{ hour12: false }).replace(/^\D*/, ''));
+                now = new Date(+now - 2000);
+            }
+            return res;
+        })();
+        const data_Pipe_Pres = (function () {
+            let res = [];
+            let len = 10;
+            while (len--) {
+                res.push(Math.round(Math.random() * 1000));
+            }
+            return res;
+        })();
+        const data_Ambient_Pres = (function () {
+            let res = [];
+            let len = 10;
+            while (len--) {
+                res.push(Math.round(Math.random() * 1000));
+            }
+            return res;
+        })();
+        const data_Pipe_Temp = (function () {
+            let res = [];
+            let len = 10;
+            while (len--) {
+                res.push(Math.round(Math.random() * 40));
+            }
+            return res;
+        })();
+        const data_Chip_Temp = (function () {
+            let res = [];
+            let len = 10;
+            while (len--) {
+                res.push(Math.round(Math.random() * 40));
+            }
+            return res;
+        })();
+        const data_Current_nPressure = (function () {
+            let res = [];
+            let len = 10;
+            while (len--) {
+                res.push(Math.round(Math.random() * 700));
+            }
+            return res;
+        })();
+        const data_Set_nPressure = (function () {
+            let res = [];
+            let len = 10;
+            while (len--) {
+                res.push(Math.round(Math.random() * 700));
+            }
+            return res;
+        })();
+        option = {
+            backgroundColor: 'rgb(40, 44, 52)',
+            color: colors,
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                }
+            },
+            grid: {
+                right: '20%'
+            },
+            toolbox: {
+                feature: {
+                    dataView: {
+                        show: false,
+                        readOnly: false
+                    },
+                    restore: {
+                        show: false
+                    },
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            },
+            legend: {
+                data: [
+                    'Pipe_Pres',
+                    'Ambient_Pres',
+                    'Pipe_Temp',
+                    'Chip_Temp',
+                    'Set_nPressure',
+                    'Current_nPressure'
+                ]
+            },
+            dataZoom: {
+                show: true,
+                start: 0,
+                end: 2000
+            },
+            xAxis: [{
+                type: 'category',
+                boundaryGap: true,
+                axisTick: {
+                    alignWithLabel: true
+                },
+                data: categories
+            }],
+            yAxis: [{
+                    type: 'value',
+                    name: '压力',
+                    position: 'left',
+                    alignTicks: true,
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: colors[0]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} hPa'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '温度',
+                    position: 'right',
+                    alignTicks: true,
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: colors[2]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} °C'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '负压',
+                    position: 'right',
+                    alignTicks: true,
+                    offset: 80,
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: colors[1]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} hPa'
+                    }
+                }
+            ],
+            series: [{
+                    name: 'Pipe_Pres',
+                    yAxisIndex: 0,
+                    type: 'line',
+                    symbol: 'triangle',
+                    symbolSize: '10',
+                    color: colors[0],
+                    data: data_Pipe_Pres
+                },
+                {
+                    name: 'Ambient_Pres',
+                    yAxisIndex: 0,
+                    type: 'line',
+                    symbol: 'circle',
+                    symbolSize: '10',
+                    color: colors[0],
+                    data: data_Ambient_Pres
+                },
+                {
+                    name: 'Pipe_Temp',
+                    yAxisIndex: 1,
+                    type: 'line',
+                    symbol: 'triangle',
+                    symbolSize: '10',
+                    color: colors[2],
+                    data: data_Pipe_Temp
+                },
+                {
+                    name: 'Chip_Temp',
+                    yAxisIndex: 1,
+                    type: 'line',
+                    symbol: 'circle',
+                    symbolSize: '10',
+                    color: colors[2],
+                    data: data_Chip_Temp
+                },
+                {
+                    name: 'Current_nPressure',
+                    yAxisIndex: 2,
+                    type: 'line',
+                    symbol: 'triangle',
+                    symbolSize: '10',
+                    color: colors[1],
+                    data: data_Current_nPressure
+                },
+                {
+                    name: 'Set_nPressure',
+                    yAxisIndex: 2,
+                    type: 'line',
+                    symbol: 'circle',
+                    symbolSize: '10',
+                    color: colors[1],
+                    data: data_Set_nPressure
+                }
+            ]
+        };
+        setInterval(function () {
+            let axisData = new Date().toLocaleTimeString('chinese',{ hour12: false }).replace(/^\D*/, '');
+            data_Pipe_Pres.shift();
+            data_Pipe_Pres.push(Math.round(Math.random() * 1000));
+            data_Ambient_Pres.shift();
+            data_Ambient_Pres.push(Math.round(Math.random() * 1000));
+            data_Pipe_Temp.shift();
+            data_Pipe_Temp.push(Math.round(Math.random() * 50));
+            data_Chip_Temp.shift();
+            data_Chip_Temp.push(Math.round(Math.random() * 40));
+            data_Current_nPressure.shift();
+            data_Current_nPressure.push(Math.round(Math.random() * 700));
+            data_Set_nPressure.shift();
+            data_Set_nPressure.push(Math.round(Math.random() * 700));
+            categories.shift();
+            categories.push(axisData);
+            myChart.setOption({
+                xAxis: [{
+                    data: categories
+                }],
+                series: [{
+                        data: data_Pipe_Pres
+                    },
+                    {
+                        data: data_Ambient_Pres
+                    },
+                    {
+                        data: data_Pipe_Temp
+                    },
+                    {
+                        data: data_Chip_Temp
+                    },
+                    {
+                        data: data_Current_nPressure
+                    },
+                    {
+                        data: data_Set_nPressure
+                    }
+                ]
+            });
+        }, 1000);
+        if (option && typeof option === 'object') {
+            myChart.setOption(option);
+        }
+
+        window.addEventListener('resize', myChart.resize);
+    </script>
+</body>
+
+</html>

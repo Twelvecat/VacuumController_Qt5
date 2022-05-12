@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+
+<head>
+  <meta charset="utf-8" />
+  <!-- 引入刚刚下载的 ECharts 文件 -->
+  <script src="echarts.js"></script>
+</head>
+
+<body style="height: 100%; margin: 0">
+  <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+  <div id="container" style="width: 561px;height: 321px;"></div>
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, "dark", {
+      renderer: 'svg',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    option = {
+      backgroundColor: 'rgb(40, 44, 52)',
+      series: [{
+          type: 'gauge',
+          radius: '55%',
+          center: ['26%', '42%'],
+          startAngle: 200,
+          endAngle: -20,
+          min: 1200,
+          max: 300,
+          splitNumber: 9,
+          itemStyle: {
+            color: '#ACDFED',
+          },
+          progress: {
+            show: true,
+            width: 25
+          },
+          pointer: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              width: 25
+            }
+          },
+          axisTick: {
+            distance: -40,
+            splitNumber: 5,
+            lineStyle: {
+              width: 2,
+              color: '#999'
+            }
+          },
+          splitLine: {
+            distance: -48,
+            length: 14,
+            lineStyle: {
+              width: 3,
+              color: '#999'
+            }
+          },
+          axisLabel: {
+            distance: -8,
+            color: '#999',
+            fontSize: 12,
+            padding: [2, -6, 0, -10]
+          },
+          anchor: {
+            show: false
+          },
+          title: {
+            show: false
+          },
+          detail: {
+            valueAnimation: false,
+            width: '60%',
+            lineHeight: 40,
+            borderRadius: 8,
+            offsetCenter: [0, '-15%'],
+            fontSize: 20,
+            fontWeight: 'bolder',
+            formatter: '{value} hPa',
+            color: 'auto'
+          },
+          data: [{
+            value: 1060.7
+          }]
+        },
+        {
+          type: 'gauge',
+          radius: '55%',
+          center: ['26%', '42%'],
+          startAngle: 200,
+          endAngle: -20,
+          min: 1200,
+          max: 300,
+          itemStyle: {
+            color: '#07C8FF'
+          },
+          progress: {
+            show: true,
+            width: 6
+          },
+          pointer: {
+            show: false
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            show: false
+          },
+          axisLabel: {
+            show: false
+          },
+          detail: {
+            show: false
+          },
+          data: [{
+            value: 1060.7
+          }]
+        },
+        {
+          type: 'gauge',
+          radius: '55%',
+          center: ['76%', '42%'],
+          startAngle: 200,
+          endAngle: -20,
+          min: -15,
+          max: 85,
+          splitNumber: 10,
+          itemStyle: {
+            color: '#FFAB91'
+          },
+          progress: {
+            show: true,
+            width: 25
+          },
+          pointer: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              width: 25
+            }
+          },
+          axisTick: {
+            distance: -40,
+            splitNumber: 5,
+            lineStyle: {
+              width: 2,
+              color: '#999'
+            }
+          },
+          splitLine: {
+            distance: -48,
+            length: 14,
+            lineStyle: {
+              width: 3,
+              color: '#999'
+            }
+          },
+          axisLabel: {
+            distance: -8,
+            color: '#999',
+            fontSize: 12,
+            padding: [2, 0, 0, 0]
+          },
+          anchor: {
+            show: false
+          },
+          title: {
+            show: false
+          },
+          detail: {
+            valueAnimation: false,
+            width: '60%',
+            lineHeight: 40,
+            borderRadius: 8,
+            offsetCenter: [0, '-15%'],
+            fontSize: 20,
+            fontWeight: 'bolder',
+            formatter: '{value} ℃',
+            color: 'auto'
+          },
+          data: [{
+            value: 15.6
+          }]
+        },
+        {
+          type: 'gauge',
+          radius: '55%',
+          center: ['76%', '42%'],
+          startAngle: 200,
+          endAngle: -20,
+          min: -15,
+          max: 85,
+          itemStyle: {
+            color: '#FD7347'
+          },
+          progress: {
+            show: true,
+            width: 6
+          },
+          pointer: {
+            show: false
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            show: false
+          },
+          axisLabel: {
+            show: false
+          },
+          detail: {
+            show: false
+          },
+          data: [{
+            value: 15.6
+          }]
+        },
+      ]
+    };
+    setInterval(function () {
+      const random = +(Math.random() * 60).toFixed(2);
+      myChart.setOption({
+        series: [{
+            data: [{
+              value: (random * 10).toFixed(1)
+            }]
+          },
+          {
+            data: [{
+              value: (random * 10).toFixed(1)
+            }]
+          }, {
+            data: [{
+              value: (random).toFixed(1)
+            }]
+          }, {
+            data: [{
+              value: (random).toFixed(1)
+            }]
+          }
+        ]
+      });
+    }, 2000);
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+
+</html>

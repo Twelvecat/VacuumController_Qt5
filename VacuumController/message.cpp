@@ -109,11 +109,16 @@ void extract_command(VacuumController *QtSystem)
 
 void TOUCH_deal_82command(VacuumController *QtSystem, uint8_t *p_Cmdbuf)
 {
-    if(QtSystem->system_status.current == 6) return;
     uint8_t data_len = p_Cmdbuf[2];
     if(data_len != 5) return;
     uint16_t command_adds = ((uint16_t)p_Cmdbuf[4] << 8) | ((uint16_t)p_Cmdbuf[5]); //指令地址
-    uint16_t temp_data = ((uint16_t)p_Cmdbuf[7] << 6) | ((uint16_t)p_Cmdbuf[7]);
+    uint16_t temp_data = ((uint16_t)p_Cmdbuf[6] << 8) | ((uint16_t)p_Cmdbuf[7]);
+
+    if(QtSystem->system_status.current == 6)
+    {
+        if(System_status != command_adds)return;
+    }
+
     if(UIaddr_hp5806_B_pres == command_adds)
     {
         QtSystem->hp5806_B.Pcomp = (float)(temp_data/10.0);
@@ -166,5 +171,17 @@ void TOUCH_deal_82command(VacuumController *QtSystem, uint8_t *p_Cmdbuf)
     else if(UIaddr_pump_status == command_adds)
     {
         QtSystem->pump.status = temp_data;
+    }
+    else if(System_status == command_adds)
+    {
+        QtSystem->system_status.current = p_Cmdbuf[7];
+    }
+    else if(Output_status == command_adds)
+    {
+        QtSystem->output_value = temp_data;
+    }
+    else if(UIaddr_manual_pwm == command_adds)
+    {
+        QtSystem->output_manual = temp_data;
     }
 }

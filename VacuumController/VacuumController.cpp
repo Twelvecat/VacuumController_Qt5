@@ -20,59 +20,45 @@ void VacuumController::linkTcp(QTcpSocket *socket)
 
 void VacuumController::Init(void)
 {
-    pump = _pump{
-        .pwm = 0,
-        .frequency=0,
-        .status=0
-    };
+    pump.pwm = 0;
+    pump.frequency=0;
+    pump.status=0;
 
-    pid = _pid{
-        .SetSpeed = 0,            	//定义设定值
-        .ActualSpeed = 0,        	//定义实际值
-        .err = 0,                	//定义偏差值
-        .err_last = 0,            	//定义上一个偏差值
-        .Kp = 0,
-        .Ki = 0,
-        .Kd = 0,            	//定义比例、积分、微分系数
-        .voltage = 0,            	//定义电压值（控制执行器的变量）
-        .integral = 0,            	//定义积分值
-        .umax = 0,					//正饱和值
-        .umin = 0,					//负饱和值
-        .dead_band = 0,			//死区，单位为百帕
-    };
 
-    hp5806_A = HP5806{
-        .Tcomp = 0,
-        .Pcomp = 0,
-    };
+    pid.SetSpeed = 0;            	//定义设定值
+    pid.ActualSpeed = 0;        	//定义实际值
+    pid.err = 0;                	//定义偏差值
+    pid.err_last = 0;            	//定义上一个偏差值
+    pid.Kp = 0;
+    pid.Ki = 0;
+    pid.Kd = 0;            	//定义比例、积分、微分系数
+    pid.voltage = 0;            	//定义电压值（控制执行器的变量）
+    pid.integral = 0;            	//定义积分值
+    pid.umax = 0;					//正饱和值
+    pid.umin = 0;					//负饱和值
+    pid.dead_band = 0;			//死区，单位为百帕
 
-    hp5806_B = HP5806{
-        .Tcomp = 0,
-        .Pcomp = 0,
-    };
 
-    relay_A = _relay{
-        .status = 0,            	//继电器的状态: 0为关闭，1为导通
-        .id = 1,
-    };
+    hp5806_A.Tcomp = 0;
+    hp5806_A.Pcomp = 0;
 
-    relay_B = _relay{
-        .status = 0,            	//继电器的状态: 0为关闭，1为导通
-        .id = 2,
-    };
+    hp5806_B.Tcomp = 0;
+    hp5806_B.Pcomp = 0;
 
-    time = _time{
-        .flag_time = 0,
-        .hour = 0,
-        .min = 0,
-        .sec = 0,
-        .setting_sec = 0,
-        .remainder_sec = 0,
-    };
+    relay_A.status = 0;            	//继电器的状态: 0为关闭，1为导通
+    relay_A.id = 1;
 
-    system_status = _system_status{
-        .current = 0,
-    };
+    relay_B.status = 0;            	//继电器的状态: 0为关闭，1为导通
+    relay_B.id = 2;
+    time.flag_time = 0;
+    time.hour = 0;
+    time.min = 0;
+    time.sec = 0;
+    time.setting_sec = 0;
+    time.remainder_sec = 0;
+
+    system_status.current = 1;
+ 
 
     set_value = 0;
     current_pres = 0;
@@ -116,7 +102,7 @@ void VacuumController::SetPWM(float value)
     SendBuffer(TxBuff_8309,9);
 }
 
-void VacuumController::SetTimeSec(float value)
+void VacuumController::SetTimeSec(int value)
 {
     if(value>32767)value = 32767;
     else if(value < -1)value = -1;
@@ -142,6 +128,60 @@ void VacuumController::OpenOrCloseRelay(bool isOpen, int id)
     }
     TxBuff_8309[4] = (uint8_t)(UIaddr_relay_status >> 8);
     TxBuff_8309[5] = (uint8_t)(UIaddr_relay_status&0x00FF);
+    TxBuff_8309[7] = (uint8_t)(temp >> 8);
+    TxBuff_8309[8] = (uint8_t)(temp&0x00FF);
+
+    SendBuffer(TxBuff_8309,9);
+}
+
+void VacuumController::Run(int flag)
+{
+    uint16_t addr = 0x0000;
+    uint16_t data = 0x0000;
+    if(system_status.current == 1){
+        if(flag == 1){//自动
+            addr = UIaddr_auto;
+            data = 0x0101;
+        }
+        else if(flag == 0)//手动
+        {
+            addr = UIaddr_manual;
+            data = 0x0101;
+        }
+    }
+    else if(system_status.current == 2)
+    {
+        addr = UIaddr_auto;
+        data = 0x0102;
+    }
+    else if(system_status.current == 3)
+    {
+        addr = UIaddr_auto;
+        data = 0x0103;
+    }
+    else if(system_status.current == 4)
+    {
+        addr = UIaddr_manual;
+        data = 0x0102;
+    }
+    else if(system_status.current == 5)
+    {
+        addr = UIaddr_manual;
+        data = 0x0103;
+    }
+    TxBuff_8309[4] = (uint8_t)(addr >> 8);
+    TxBuff_8309[5] = (uint8_t)(addr&0x00FF);
+    TxBuff_8309[7] = (uint8_t)(data >> 8);
+    TxBuff_8309[8] = (uint8_t)(data&0x00FF);
+
+    SendBuffer(TxBuff_8309,9);
+}
+
+void VacuumController::Stop(void)
+{
+    uint16_t temp = 0x0101;
+    TxBuff_8309[4] = (uint8_t)(UIaddr_stop >> 8);
+    TxBuff_8309[5] = (uint8_t)(UIaddr_stop&0x00FF);
     TxBuff_8309[7] = (uint8_t)(temp >> 8);
     TxBuff_8309[8] = (uint8_t)(temp&0x00FF);
 
