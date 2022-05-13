@@ -13,11 +13,16 @@
 #include <QMessageBox>
 #include <QWebEnginePage>
 #include <QWebEngineProfile>
-
+#include <QFile>
+#include <QDir>
+#include <QFileDialog>
+#include "saveDataThread.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+void saveData(QString fileName);
 
 class MainWindow : public QMainWindow
 {
@@ -26,34 +31,39 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void Delay_MSec(unsigned int msec);
+    bool DirExistEx(QString fullPath);
+    QString CreateFile();
 
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
     QThread mesgThread;
+    QThread saveThread;
     QWebEngineView *pEngView;
     QWebEngineView *pEngViewC;
     QButtonGroup *m_btnGroup1;
     QButtonGroup *m_btnGroup2;
     QTimer *timer;
+    QTimer *timer_curve;
     QWebEngineProfile *profile;
+    int m_btnGroup1_isbusy;
+    int m_btnGroup2_isbusy;
+    int button_run_isbusy;
+    int button_stop_isbusy;
+    int Slider_PWM_isbusy;
+
 
 private slots:
 
     void on_pushButton_Connect_clicked();
-
     void on_pushButton_Send_clicked();
-
     void on_pushButton_Run_clicked();
-
     void on_pushButton_Stop_clicked();
-
     void socket_Read_Data();
-
     void socket_Disconnected();
-
     static void handleResults(void);  // 处理子线程执行的结果
-
+    static void handlesaveResults(void);  // 处理子线程执行的结果
     void on_bgGroup1_toggled(int);
     void on_bgGroup2_toggled(int);
     void valueChanged_change(int);
@@ -61,9 +71,12 @@ private slots:
     void lineEdit_setPres_change(void);
     void lineEdit_setTime_change(void);
     void updataView(void);
+    void updataCurve(void);
     void on_WebDownload(QWebEngineDownloadItem *item);
+    void sliderReleased_PWM();
 
 signals:
     void opt_command(void);  // 发送信号，触发线程
+    void opt_save(void);  // 发送信号，触发线程
 };
 #endif // MAINWINDOW_H

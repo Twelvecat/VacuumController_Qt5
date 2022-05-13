@@ -65,7 +65,10 @@ void VacuumController::Init(void)
     output_value = 0;
     output_manual = 0;
     pid_mode = 0;
-    leak_status = 0;
+    safeEvent_status  = 0;
+    WriteData_Enable = 0;
+    File_isClose = 1;
+    fileName = "";
 }
 
 void VacuumController::SendBuffer(uint8_t *ptr,int len)
@@ -74,6 +77,19 @@ void VacuumController::SendBuffer(uint8_t *ptr,int len)
     buffer = QByteArray::fromRawData((char*)ptr, len);
     _socket->write(buffer);
     _socket->flush();
+
+//确认发送信息
+//#define SEND_INFO
+#ifdef SEND_INFO
+    qDebug() << "Message Success!";
+    QString strTmp;
+    for(int n = 0; n<len; n++)
+    {
+        strTmp +=  QString().sprintf("%02X", (unsigned char)buffer[n]);
+        strTmp += " ";
+    }
+    qDebug() << strTmp;
+#endif
 }
 
 void VacuumController::SetValue(float value)
@@ -182,6 +198,17 @@ void VacuumController::Stop(void)
     uint16_t temp = 0x0101;
     TxBuff_8309[4] = (uint8_t)(UIaddr_stop >> 8);
     TxBuff_8309[5] = (uint8_t)(UIaddr_stop&0x00FF);
+    TxBuff_8309[7] = (uint8_t)(temp >> 8);
+    TxBuff_8309[8] = (uint8_t)(temp&0x00FF);
+
+    SendBuffer(TxBuff_8309,9);
+}
+
+void VacuumController::Know(void)
+{
+    uint16_t temp = 0x0101;
+    TxBuff_8309[4] = (uint8_t)(UIaddr_warring >> 8);
+    TxBuff_8309[5] = (uint8_t)(UIaddr_warring&0x00FF);
     TxBuff_8309[7] = (uint8_t)(temp >> 8);
     TxBuff_8309[8] = (uint8_t)(temp&0x00FF);
 

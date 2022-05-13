@@ -75,7 +75,7 @@
             show: false
           },
           detail: {
-            valueAnimation: false,
+            valueAnimation: true,
             width: '60%',
             lineHeight: 40,
             borderRadius: 8,
@@ -86,7 +86,7 @@
             color: 'auto'
           },
           data: [{
-            value: 1060.7
+            value: 0
           }]
         },
         {
@@ -123,7 +123,7 @@
             show: false
           },
           data: [{
-            value: 1060.7
+            value: 0
           }]
         },
         {
@@ -179,7 +179,7 @@
             show: false
           },
           detail: {
-            valueAnimation: false,
+            valueAnimation: true,
             width: '60%',
             lineHeight: 40,
             borderRadius: 8,
@@ -190,7 +190,7 @@
             color: 'auto'
           },
           data: [{
-            value: 15.6
+            value: 0
           }]
         },
         {
@@ -227,35 +227,60 @@
             show: false
           },
           data: [{
-            value: 15.6
+            value: 0
           }]
         },
       ]
     };
-    setInterval(function () {
-      const random = +(Math.random() * 60).toFixed(2);
+
+    function updata(str_vale) {
       myChart.setOption({
         series: [{
             data: [{
-              value: (random * 10).toFixed(1)
+              value: str_vale["data_pres"]
             }]
           },
           {
             data: [{
-              value: (random * 10).toFixed(1)
+              value: str_vale["data_pres"]
             }]
           }, {
             data: [{
-              value: (random).toFixed(1)
+              value: str_vale["data_temp"]
             }]
           }, {
             data: [{
-              value: (random).toFixed(1)
+              value: str_vale["data_temp"]
             }]
           }
         ]
-      });
-    }, 2000);
+      });      
+    }
+
+    // setInterval(function () {
+    //   const random = +(Math.random() * 60).toFixed(2);
+    //   myChart.setOption({
+    //     series: [{
+    //         data: [{
+    //           value: (random * 10).toFixed(1)
+    //         }]
+    //       },
+    //       {
+    //         data: [{
+    //           value: (random * 10).toFixed(1)
+    //         }]
+    //       }, {
+    //         data: [{
+    //           value: (random).toFixed(1)
+    //         }]
+    //       }, {
+    //         data: [{
+    //           value: (random).toFixed(1)
+    //         }]
+    //       }
+    //     ]
+    //   });
+    // }, 2000);
 
     if (option && typeof option === 'object') {
       myChart.setOption(option);

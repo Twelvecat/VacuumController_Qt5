@@ -64,6 +64,7 @@ public:
     void linkTcp(QTcpSocket *socket);
     void Run(int);
     void Stop(void);
+    void Know(void);
 
 
     struct _pump pump;		//创建一个泵
@@ -77,7 +78,10 @@ public:
     float output_value; //输出值
     float output_manual; //手动输出值
     unsigned char pid_mode;			//pid模式：0为积分分离pid，1为模糊pid
-    unsigned char leak_status;			//泄漏标志位：0为未泄漏，1为泄漏
+    unsigned short int safeEvent_status;			//安全警告
+    int WriteData_Enable;
+    int File_isClose;
+    QString fileName;
 
 private:
     QTcpSocket *_socket;

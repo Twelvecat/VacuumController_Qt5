@@ -23,7 +23,7 @@
         const categories = (function () {
             let now = new Date();
             let res = [];
-            let len = 10;
+            let len = 1;
             while (len--) {
                 res.unshift(now.toLocaleTimeString('chinese',{ hour12: false }).replace(/^\D*/, ''));
                 now = new Date(+now - 2000);
@@ -32,49 +32,50 @@
         })();
         const data_Pipe_Pres = (function () {
             let res = [];
-            let len = 10;
+            let len = 0;
             while (len--) {
-                res.push(Math.round(Math.random() * 1000));
+                // res.push(Math.round(Math.random() * 1000));
+                res.push(0);
             }
             return res;
         })();
         const data_Ambient_Pres = (function () {
             let res = [];
-            let len = 10;
+            let len = 1;
             while (len--) {
-                res.push(Math.round(Math.random() * 1000));
+                res.push(0);
             }
             return res;
         })();
         const data_Pipe_Temp = (function () {
             let res = [];
-            let len = 10;
+            let len = 1;
             while (len--) {
-                res.push(Math.round(Math.random() * 40));
+                res.push(0);
             }
             return res;
         })();
         const data_Chip_Temp = (function () {
             let res = [];
-            let len = 10;
+            let len = 1;
             while (len--) {
-                res.push(Math.round(Math.random() * 40));
+                res.push(0);
             }
             return res;
         })();
         const data_Current_nPressure = (function () {
             let res = [];
-            let len = 10;
+            let len = 1;
             while (len--) {
-                res.push(Math.round(Math.random() * 700));
+                res.push(0);
             }
             return res;
         })();
         const data_Set_nPressure = (function () {
             let res = [];
-            let len = 10;
+            let len = 1;
             while (len--) {
-                res.push(Math.round(Math.random() * 700));
+                res.push(0);
             }
             return res;
         })();
@@ -117,7 +118,7 @@
             dataZoom: {
                 show: true,
                 start: 0,
-                end: 2000
+                end: 600
             },
             xAxis: [{
                 type: 'category',
@@ -131,7 +132,7 @@
                     type: 'value',
                     name: '压力',
                     position: 'left',
-                    alignTicks: true,
+                    alignTicks: false,
                     axisLine: {
                         show: true,
                         lineStyle: {
@@ -146,7 +147,7 @@
                     type: 'value',
                     name: '温度',
                     position: 'right',
-                    alignTicks: true,
+                    alignTicks: false,
                     axisLine: {
                         show: true,
                         lineStyle: {
@@ -161,7 +162,7 @@
                     type: 'value',
                     name: '负压',
                     position: 'right',
-                    alignTicks: true,
+                    alignTicks: false,
                     offset: 80,
                     axisLine: {
                         show: true,
@@ -230,21 +231,22 @@
                 }
             ]
         };
-        setInterval(function () {
+
+        function updata(str_vale) {
             let axisData = new Date().toLocaleTimeString('chinese',{ hour12: false }).replace(/^\D*/, '');
-            data_Pipe_Pres.shift();
-            data_Pipe_Pres.push(Math.round(Math.random() * 1000));
-            data_Ambient_Pres.shift();
-            data_Ambient_Pres.push(Math.round(Math.random() * 1000));
-            data_Pipe_Temp.shift();
-            data_Pipe_Temp.push(Math.round(Math.random() * 50));
-            data_Chip_Temp.shift();
-            data_Chip_Temp.push(Math.round(Math.random() * 40));
-            data_Current_nPressure.shift();
-            data_Current_nPressure.push(Math.round(Math.random() * 700));
-            data_Set_nPressure.shift();
-            data_Set_nPressure.push(Math.round(Math.random() * 700));
-            categories.shift();
+            if(data_Pipe_Pres.length>60){data_Pipe_Pres.shift();}
+            data_Pipe_Pres.push(str_vale["data_Pipe_Pres"][0]);
+            if(data_Ambient_Pres.length>60){data_Ambient_Pres.shift();}
+            data_Ambient_Pres.push(str_vale["data_Ambient_Pres"][0]);
+            if(data_Pipe_Temp.length>60){data_Pipe_Temp.shift();}
+            data_Pipe_Temp.push(str_vale["data_Pipe_Temp"][0]);
+            if(data_Chip_Temp.length>60){data_Chip_Temp.shift();}
+            data_Chip_Temp.push(str_vale["data_Chip_Temp"][0]);
+            if(data_Current_nPressure.length>60){data_Current_nPressure.shift();}
+            data_Current_nPressure.push(str_vale["data_Current_nPressure"][0]);
+            if(data_Set_nPressure.length>60){data_Set_nPressure.shift();}
+            data_Set_nPressure.push(str_vale["data_Set_nPressure"][0]);
+            if(categories.length>60){categories.shift();}
             categories.push(axisData);
             myChart.setOption({
                 xAxis: [{
@@ -270,7 +272,49 @@
                     }
                 ]
             });
-        }, 1000);
+        };
+
+        // setInterval(function () {
+        //     let axisData = new Date().toLocaleTimeString('chinese',{ hour12: false }).replace(/^\D*/, '');
+        //     if(data_Pipe_Pres.length>60){data_Pipe_Pres.shift();}
+        //     data_Pipe_Pres.push(Math.round(Math.random() * 1000));
+        //     if(data_Ambient_Pres.length>60){data_Ambient_Pres.shift();}
+        //     data_Ambient_Pres.push(Math.round(Math.random() * 1000));
+        //     if(data_Pipe_Temp.length>60){data_Pipe_Temp.shift();}
+        //     data_Pipe_Temp.push(Math.round(Math.random() * 50));
+        //     if(data_Chip_Temp.length>60){data_Chip_Temp.shift();}
+        //     data_Chip_Temp.push(Math.round(Math.random() * 40));
+        //     if(data_Current_nPressure.length>60){data_Current_nPressure.shift();}
+        //     data_Current_nPressure.push(Math.round(Math.random() * 700));
+        //     if(data_Set_nPressure.length>60){data_Set_nPressure.shift();}
+        //     data_Set_nPressure.push(Math.round(Math.random() * 700));
+        //     if(categories.length>60){categories.shift();}
+        //     categories.push(axisData);
+        //     myChart.setOption({
+        //         xAxis: [{
+        //             data: categories
+        //         }],
+        //         series: [{
+        //                 data: data_Pipe_Pres
+        //             },
+        //             {
+        //                 data: data_Ambient_Pres
+        //             },
+        //             {
+        //                 data: data_Pipe_Temp
+        //             },
+        //             {
+        //                 data: data_Chip_Temp
+        //             },
+        //             {
+        //                 data: data_Current_nPressure
+        //             },
+        //             {
+        //                 data: data_Set_nPressure
+        //             }
+        //         ]
+        //     });
+        // }, 1000);
         if (option && typeof option === 'object') {
             myChart.setOption(option);
         }

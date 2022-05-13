@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 #include "VacuumController.h"
-
+#include <QMessageBox>
 
 /* exact-width signed integer types */
 typedef   signed          char int8_t;

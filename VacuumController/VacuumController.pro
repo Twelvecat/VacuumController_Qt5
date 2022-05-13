@@ -16,14 +16,16 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
-    messageThread.cpp
+    messageThread.cpp \
+    savaDataThread.cpp
 
 HEADERS += \
     SwBtn.h \
     VacuumController.h \
     mainwindow.h \
     message.h \
-    messageThread.h
+    messageThread.h \
+    saveDataThread.h
 
 FORMS += \
     mainwindow.ui

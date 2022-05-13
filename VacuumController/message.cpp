@@ -1,4 +1,4 @@
-#include "message.h"
+﻿#include "message.h"
 #include <QDebug>
 
 uint16_t StartNum=0,TalNum=0;
@@ -67,7 +67,7 @@ void extract_command(VacuumController *QtSystem)
     }
 
     //确认指令信息
-#define MESSAGE_INFO
+//#define MESSAGE_INFO
 #ifdef MESSAGE_INFO
     qDebug() << "Message Success!";
     QString strTmp;
@@ -178,10 +178,22 @@ void TOUCH_deal_82command(VacuumController *QtSystem, uint8_t *p_Cmdbuf)
     }
     else if(Output_status == command_adds)
     {
-        QtSystem->output_value = temp_data;
+        QtSystem->output_value = temp_data/40.0;
     }
     else if(UIaddr_manual_pwm == command_adds)
     {
         QtSystem->output_manual = temp_data;
+    }
+    else if(UIaddr_warring == command_adds)
+    {
+        /*
+        0x01: 温度上限 P：1
+        0x02: 温度下限 P：1
+        0x03: 气压上限 P：4
+        0x04: 气压下限 P：5
+        0x05: 管道泄漏 P：2
+        0x06: 设备初始化未通过 P：3
+        */
+        QtSystem->safeEvent_status = temp_data;
     }
 }
