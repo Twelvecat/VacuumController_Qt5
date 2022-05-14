@@ -70,11 +70,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_setTime->setStyleSheet("\
         QLineEdit{border-radius: 5px;background: #464C59;color:#EAEBEB;}\
     ");
-    setWindowTitle(QString::fromLocal8Bit("真空负压控制器"));
-    setWindowIcon(QIcon(qApp->applicationDirPath() +"/htmlEcharts/VC.ico"));
+    this->setWindowTitle(QString::fromLocal8Bit("真空负压控制器"));
+    this->setWindowIcon(QIcon(qApp->applicationDirPath() +"/htmlEcharts/VC.ico"));
+    //this->setAttribute(Qt::WA_DeleteOnClose,true);
+
 
     /*通讯部份*/
-    socket = new QTcpSocket();
+    socket = new QTcpSocket(this);
     //连接信号槽
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::socket_Read_Data);
     QObject::connect(socket, &QTcpSocket::disconnected, this, &MainWindow::socket_Disconnected);
@@ -93,6 +95,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&mesgThread, &QThread::finished, messageThread, &QObject::deleteLater);
     // 线程结束后发送信号，对结果进行处理
     connect(messageThread, SIGNAL(resultReady(void)), this, SLOT(handleResults(void)));
+    // 终止循环信号
+    connect(this, SIGNAL(kill_mesgThread(void)), messageThread, SLOT(kill_Thread(void)));
     // 启动线程
     mesgThread.start();
     // 发射信号，开始执行
@@ -100,12 +104,14 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "\tCurrent thread ID:" << QThread::currentThreadId() << '\n' ;
     emit opt_command();
 
+
     /*保存文件线程*/
     auto *savedataThread = new saveDataThread;
     savedataThread->moveToThread(&saveThread);
     connect(this, SIGNAL(opt_save(void)), savedataThread, SLOT(run(void)));
     connect(&saveThread, &QThread::finished, savedataThread, &QObject::deleteLater);
     connect(savedataThread, SIGNAL(resultReady(void)), this, SLOT(handlesaveResults(void)));
+    connect(this, SIGNAL(kill_saveThread(void)), savedataThread, SLOT(kill_Thread(void)));
     saveThread.start();
     // 发射信号，开始执行
     qDebug() << "emit the signal to execute!" ;
@@ -133,15 +139,14 @@ MainWindow::MainWindow(QWidget *parent)
     profile = pEngViewC->page()->profile();
     connect(profile,SIGNAL(downloadRequested(QWebEngineDownloadItem *)),this,SLOT(on_WebDownload(QWebEngineDownloadItem *)));
 
-
     // 继电器1
-    m_btnGroup1 = new QButtonGroup;
+    m_btnGroup1 = new QButtonGroup(this);
     m_btnGroup1->addButton(ui->radioButton_1O,1);
     m_btnGroup1->addButton(ui->radioButton_1C,0);
     ui->radioButton_1C->setChecked(1);
     connect(m_btnGroup1, SIGNAL(buttonClicked(int)), this, SLOT(on_bgGroup1_toggled(int)));
     // 继电器2
-    m_btnGroup2 = new QButtonGroup;
+    m_btnGroup2 = new QButtonGroup(this);
     m_btnGroup2->addButton(ui->radioButton_2O,1);
     m_btnGroup2->addButton(ui->radioButton_2C,0);
     ui->radioButton_2C->setChecked(1);
@@ -183,12 +188,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    emit kill_mesgThread();
+    emit kill_saveThread();
     // 析构函数中调用 quit() 函数结束线程
     mesgThread.quit();
     mesgThread.wait();
     saveThread.quit();
     saveThread.wait();
-    delete this->socket;
+//    delete this->socket;
+//    delete pEngView;
+//    delete pEngViewC;
+//    delete m_btnGroup1;
+//    delete m_btnGroup2;
+//    delete timer;
+//    delete timer_curve;
     delete ui;
 }
 

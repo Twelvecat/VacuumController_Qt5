@@ -78,5 +78,7 @@ private slots:
 signals:
     void opt_command(void);  // 发送信号，触发线程
     void opt_save(void);  // 发送信号，触发线程
+    void kill_mesgThread(void);
+    void kill_saveThread(void);
 };
 #endif // MAINWINDOW_H

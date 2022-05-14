@@ -2,10 +2,16 @@
 #include "mainwindow.h"
 #include "VacuumController.h"
 #include "ui_mainwindow.h"
+#include <QApplication>
 
 saveDataThread::saveDataThread(QObject *parent)
 {
+    end = 1;
+}
 
+void saveDataThread::kill_Thread(void)
+{
+    end = 0;
 }
 
 void saveDataThread::run(void)
@@ -14,7 +20,8 @@ void saveDataThread::run(void)
     qDebug() << "\tCurrent thread ID: " << QThread::currentThreadId();
     // 循环
     QTime _Timer;
-    while(1){
+    while(end){
+        QApplication::processEvents();
         if(QtSystem.WriteData_Enable)saveData(QtSystem.fileName);
         //延时
         _Timer = QTime::currentTime().addMSecs(1000);
