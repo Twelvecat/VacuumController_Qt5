@@ -77,6 +77,7 @@ public:
     float current_pres;
     float output_value; //输出值
     float output_manual; //手动输出值
+    float deltak; //手动输出值
     unsigned char pid_mode;			//pid模式：0为积分分离pid，1为模糊pid
     unsigned short int safeEvent_status;			//安全警告
     int WriteData_Enable;

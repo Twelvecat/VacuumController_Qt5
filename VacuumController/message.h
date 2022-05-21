@@ -77,13 +77,16 @@ typedef unsigned           int uint32_t;
 // 警告板块 - 应该是给下位机发送
 #define UIaddr_warring 0x0036
 
+//控制参数
+#define UIaddr_pid_mode 0x0090
+#define UIaddr_pid_p 0x0091
+#define UIaddr_pid_i 0x0092
+#define UIaddr_pid_d 0x0093
+#define UIaddr_pid_delta_k 0x0094
+
 //暂未启用
 #define UIaddr_pump_freq 0x0094
 #define UIaddr_pump_pwm 0x0098
-#define UIaddr_pid_p 0x009C
-#define UIaddr_pid_i 0x00A0
-#define UIaddr_pid_d 0x00A4
-#define UIaddr_pid_mode 0x00A8
 #define UIaddr_leak_status 0x00B8
 #define UIaddr_system_status 0x00C0
 #define UIaddr_set_value 0x0826

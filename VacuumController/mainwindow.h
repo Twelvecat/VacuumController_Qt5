@@ -22,6 +22,7 @@
 #include <QDropEvent>
 #include <QMimeData>
 #include "dataview.h"
+#include "debugpid.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -62,15 +63,16 @@ private:
 private slots:
 
     void on_pushButton_Connect_clicked();
-    void on_pushButton_Send_clicked();
+    void pushButton_Send_clicked();
     void on_pushButton_Run_clicked();
     void on_pushButton_Stop_clicked();
+    void on_pushButton_PID_clicked();
     void socket_Read_Data();
     void socket_Disconnected();
     static void handleResults(void);  // 处理子线程执行的结果
     static void handlesaveResults(void);  // 处理子线程执行的结果
-    void on_bgGroup1_toggled(int);
-    void on_bgGroup2_toggled(int);
+    void bgGroup1_toggled(int);
+    void bgGroup2_toggled(int);
     void valueChanged_change(int);
     void valueChanged_PWM(int);
     void lineEdit_setPres_change(void);
@@ -79,7 +81,7 @@ private slots:
     void updataCurve(void);
     void on_WebDownload(QWebEngineDownloadItem *item);
     void sliderReleased_PWM();
-
+    void pEngViewCloadFinish();
     virtual void dragEnterEvent(QDragEnterEvent* e) override;
     virtual void dropEvent(QDropEvent* e) override;
     virtual void dragMoveEvent(QDragMoveEvent* e) override;

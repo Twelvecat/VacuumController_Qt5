@@ -184,6 +184,33 @@ void TOUCH_deal_82command(VacuumController *QtSystem, uint8_t *p_Cmdbuf)
     {
         QtSystem->output_manual = temp_data;
     }
+    else if(UIaddr_pid_mode == command_adds)
+    {
+        QtSystem->pid_mode = p_Cmdbuf[7];
+        if(QtSystem->pid_mode==0)printf("pid_mode:PID\n");
+        else if(QtSystem->pid_mode=10)printf("pid_mode:fuzzyPID\n");
+        else printf("pid_mode:ERROR\n");
+    }
+    else if(UIaddr_pid_p == command_adds)
+    {
+        QtSystem->pid.Kp = ((int16_t)temp_data)/1000.0;
+        printf("pid_Kp:%.3f\n",QtSystem->pid.Kp);
+    }
+    else if(UIaddr_pid_i == command_adds)
+    {
+        QtSystem->pid.Ki = ((int16_t)temp_data)/1000.0;
+        printf("pid_Ki:%.3f\n",QtSystem->pid.Ki);
+    }
+    else if(UIaddr_pid_d == command_adds)
+    {
+        QtSystem->pid.Kd = ((int16_t)temp_data)/1000.0;
+        printf("pid_Kd:%.3f\n",QtSystem->pid.Kd);
+    }
+    else if(UIaddr_pid_delta_k == command_adds)
+    {
+        QtSystem->deltak = ((int16_t)temp_data)/1000.0;
+        printf("pid_Delta:%.3f\n",QtSystem->deltak);
+    }
     else if(UIaddr_warring == command_adds)
     {
         /*

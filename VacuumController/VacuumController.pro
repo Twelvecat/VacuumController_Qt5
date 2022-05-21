@@ -2,11 +2,13 @@ QT       += core gui
 QT       += network
 QT       += webenginewidgets
 
+
 RC_FILE += qtIcon.rc
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
+CONFIG += console
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -16,6 +18,7 @@ SOURCES += \
     SwBtn.cpp \
     VacuumController.cpp \
     dataview.cpp \
+    debugpid.cpp \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
@@ -26,6 +29,7 @@ HEADERS += \
     SwBtn.h \
     VacuumController.h \
     dataview.h \
+    debugpid.h \
     mainwindow.h \
     message.h \
     messageThread.h \
@@ -33,6 +37,7 @@ HEADERS += \
 
 FORMS += \
     dataview.ui \
+    debugpid.ui \
     mainwindow.ui
 
 # Default rules for deployment.

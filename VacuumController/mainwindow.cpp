@@ -13,6 +13,15 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->pushButton_PID->hide();
+    QStringList list_parm= QCoreApplication::arguments();
+    if(list_parm.size() > 1)
+    {
+        if(list_parm[1] == "--debug" || list_parm[1] == "-D" || list_parm[1] == "--Debug"){
+            ui->pushButton_PID->show();
+        }
+
+    }
 
     // 颜色调教
     ui->label_ip->setStyleSheet("color: #EAEBEB;");
@@ -54,6 +63,11 @@ MainWindow::MainWindow(QWidget *parent)
         QPushButton::pressed{color:#EAEBEB;background-color:#464C59;border-style:outset;border-radius: 10px;border-width:1px;border-color:#EAEBEB;}\
     ");
     ui->pushButton_Stop->setStyleSheet("\
+        QPushButton{color:#EAEBEB;background-color:#282c34;border-style:outset;border-radius: 10px;border-width:1px;border-color:#EAEBEB;}\
+        QPushButton::hover{color:#282c34;background-color:#EAEBEB;border-style:outset;border-radius: 10px;border-width:1px;border-color:#EAEBEB;}\
+        QPushButton::pressed{color:#EAEBEB;background-color:#464C59;border-style:outset;border-radius: 10px;border-width:1px;border-color:#EAEBEB;}\
+    ");
+    ui->pushButton_PID->setStyleSheet("\
         QPushButton{color:#EAEBEB;background-color:#282c34;border-style:outset;border-radius: 10px;border-width:1px;border-color:#EAEBEB;}\
         QPushButton::hover{color:#282c34;background-color:#EAEBEB;border-style:outset;border-radius: 10px;border-width:1px;border-color:#EAEBEB;}\
         QPushButton::pressed{color:#EAEBEB;background-color:#464C59;border-style:outset;border-radius: 10px;border-width:1px;border-color:#EAEBEB;}\
@@ -130,6 +144,7 @@ MainWindow::MainWindow(QWidget *parent)
     pEngView->show();
     //曲线
     pEngViewC = new QWebEngineView(this);
+    connect(pEngViewC, &QWebEngineView::loadFinished, this, &MainWindow::pEngViewCloadFinish);
     pEngViewC->page()->setBackgroundColor(backcolor);
     pEngViewC->setContextMenuPolicy(Qt::NoContextMenu);
     pEngViewC->resize(800,600);
@@ -145,13 +160,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_btnGroup1->addButton(ui->radioButton_1O,1);
     m_btnGroup1->addButton(ui->radioButton_1C,0);
     ui->radioButton_1C->setChecked(1);
-    connect(m_btnGroup1, SIGNAL(buttonClicked(int)), this, SLOT(on_bgGroup1_toggled(int)));
+    connect(m_btnGroup1, SIGNAL(buttonClicked(int)), this, SLOT(bgGroup1_toggled(int)));
     // 继电器2
     m_btnGroup2 = new QButtonGroup(this);
     m_btnGroup2->addButton(ui->radioButton_2O,1);
     m_btnGroup2->addButton(ui->radioButton_2C,0);
     ui->radioButton_2C->setChecked(1);
-    connect(m_btnGroup2, SIGNAL(buttonClicked(int)), this, SLOT(on_bgGroup2_toggled(int)));
+    connect(m_btnGroup2, SIGNAL(buttonClicked(int)), this, SLOT(bgGroup2_toggled(int)));
 
 
     // 设置是否启动滑块追踪：true 表示启动追踪；false 表示禁用追踪；
@@ -173,11 +188,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer = new QTimer(this);
     connect(timer, SIGNAL (timeout(void)), this, SLOT(updataView(void)));
-    timer->start(200);// 单位毫秒
+
 
     timer_curve = new QTimer(this);
     connect(timer_curve, SIGNAL (timeout(void)), this, SLOT(updataCurve(void)));
-    timer_curve->start(1000);// 单位毫秒
 
     m_btnGroup1_isbusy = 0;
     m_btnGroup2_isbusy = 0;
@@ -209,6 +223,12 @@ MainWindow::~MainWindow()
 //    delete timer;
 //    delete timer_curve;
     delete ui;
+}
+
+void MainWindow::pEngViewCloadFinish()
+{
+    timer_curve->start(1000);// 单位毫秒
+    timer->start(200);// 单位毫秒
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent* event)
@@ -615,16 +635,15 @@ void MainWindow::valueChanged_change(int value)
         ui->stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::on_bgGroup1_toggled(int id)
+void MainWindow::bgGroup1_toggled(int id)
 {
     m_btnGroup1_isbusy = 1;
     QtSystem.OpenOrCloseRelay(m_btnGroup1->checkedId(),1);
     Delay_MSec(1000);
     m_btnGroup1_isbusy = 0;
-
 }
 
-void MainWindow::on_bgGroup2_toggled(int id)
+void MainWindow::bgGroup2_toggled(int id)
 {
     m_btnGroup2_isbusy = 1;
     QtSystem.OpenOrCloseRelay(m_btnGroup2->checkedId(),2);
@@ -642,6 +661,14 @@ void MainWindow::handlesaveResults(void)
 {
     qDebug() << "receive the resultReady signal" ;
     qDebug() << "\tCurrent thread ID: " << QThread::currentThreadId() << '\n' ;
+}
+
+void MainWindow::on_pushButton_PID_clicked()
+{
+    DebugPID*  pid= new DebugPID(this);
+    pid->setWindowFlags(Qt::Window);
+    pid->linkTcp(socket);
+    pid->show();
 }
 
 void MainWindow::on_pushButton_Connect_clicked()
@@ -687,7 +714,7 @@ void MainWindow::on_pushButton_Connect_clicked()
 }
 
 
-void MainWindow::on_pushButton_Send_clicked()
+void MainWindow::pushButton_Send_clicked()
 {
     //qDebug() << "Send: " << ui->textEdit_Send->toPlainText();
      //获取文本框内容并以ASCII码形式发送
