@@ -15,6 +15,7 @@ CONFIG += c++17
 SOURCES += \
     SwBtn.cpp \
     VacuumController.cpp \
+    dataview.cpp \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
@@ -24,12 +25,14 @@ SOURCES += \
 HEADERS += \
     SwBtn.h \
     VacuumController.h \
+    dataview.h \
     mainwindow.h \
     message.h \
     messageThread.h \
     saveDataThread.h
 
 FORMS += \
+    dataview.ui \
     mainwindow.ui
 
 # Default rules for deployment.

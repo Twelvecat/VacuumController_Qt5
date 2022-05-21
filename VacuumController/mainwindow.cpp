@@ -120,7 +120,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //仪表盘
     pEngView = new QWebEngineView(this);
-    pEngView->setBackgroundRole(QPalette::Window);
+    QColor backcolor(40, 44, 52);
+    pEngView->page()->setBackgroundColor(backcolor);
     pEngView->setContextMenuPolicy(Qt::NoContextMenu);
     pEngView->resize(561,321);
     pEngView->move(25,30);
@@ -129,7 +130,7 @@ MainWindow::MainWindow(QWidget *parent)
     pEngView->show();
     //曲线
     pEngViewC = new QWebEngineView(this);
-    pEngViewC->setBackgroundRole(QPalette::Window);
+    pEngViewC->page()->setBackgroundColor(backcolor);
     pEngViewC->setContextMenuPolicy(Qt::NoContextMenu);
     pEngViewC->resize(800,600);
     pEngViewC->move(600,30);
@@ -183,6 +184,11 @@ MainWindow::MainWindow(QWidget *parent)
     button_run_isbusy = 0;
     button_stop_isbusy = 0;
     Slider_PWM_isbusy = 0;
+
+    //开启拖拽文件
+    this->setAcceptDrops(true);  //控件或者窗口
+    pEngViewC->setAcceptDrops(false);  //控件或者窗口
+
 }
 
 
@@ -204,6 +210,37 @@ MainWindow::~MainWindow()
 //    delete timer_curve;
     delete ui;
 }
+
+void MainWindow::dragEnterEvent(QDragEnterEvent* event)
+ {
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }else {
+        event->ignore();
+    }
+ }
+
+void MainWindow::dropEvent(QDropEvent* event)
+{
+    if (event->mimeData()->hasUrls() && (event->mimeData()->urls()[0].fileName().right(3).compare("csv") == 0))
+    {
+        const QList<QUrl> urls = event->mimeData()->urls();
+        QString filePath = urls.at(0).toLocalFile();
+        DataView*  view= new DataView(this);
+        view->setWindowFlags(Qt::Window);
+        view->show();
+        view->GetFilePath(filePath);
+
+    }
+}
+
+
+ void MainWindow::dragMoveEvent(QDragMoveEvent* event)
+ {
+     Q_UNUSED(event);
+     event->setDropAction(Qt::MoveAction);
+     event->accept();
+ }
 
 void MainWindow::on_WebDownload(QWebEngineDownloadItem *item)
 {

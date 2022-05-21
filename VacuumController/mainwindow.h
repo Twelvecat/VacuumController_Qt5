@@ -17,6 +17,11 @@
 #include <QDir>
 #include <QFileDialog>
 #include "saveDataThread.h"
+#include <QDragMoveEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
+#include "dataview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -74,6 +79,10 @@ private slots:
     void updataCurve(void);
     void on_WebDownload(QWebEngineDownloadItem *item);
     void sliderReleased_PWM();
+
+    virtual void dragEnterEvent(QDragEnterEvent* e) override;
+    virtual void dropEvent(QDropEvent* e) override;
+    virtual void dragMoveEvent(QDragMoveEvent* e) override;
 
 signals:
     void opt_command(void);  // 发送信号，触发线程

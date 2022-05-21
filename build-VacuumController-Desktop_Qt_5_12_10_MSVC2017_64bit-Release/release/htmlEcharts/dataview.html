@@ -8,7 +8,7 @@
 </head>
 
 <body style="height: 100%; margin: 0">
-    <div id="container" style="width: 800px;height: 600px;"></div>
+    <div id="container" style="height: 100%;"></div>
     <script type="text/javascript">
         var dom = document.getElementById('container');
         var myChart = echarts.init(dom, 'dark', {
@@ -19,13 +19,17 @@
 
         var option;
 
-        const colors = ['#ACDFED', '#f7f494', '#FFAB91'];
+        const colors = ['#ACDFED', '#f7f494', '#FFAB91', '#AEF3C3', '#B4C0F0'];
         const categories = (function () {
             let now = new Date();
             let res = [];
             let len = 1;
             while (len--) {
-                res.unshift(now.toLocaleTimeString('chinese',{ hour12: false }).replace(/^\D*/, ''));
+                res.unshift(
+                    now.toLocaleTimeString('chinese', {
+                        hour12: false
+                    }).replace(/^\D*/, '')
+                );
                 now = new Date(+now - 2000);
             }
             return res;
@@ -79,6 +83,14 @@
             }
             return res;
         })();
+        const data_Pump_Output = (function () {
+            let res = [];
+            let len = 1;
+            while (len--) {
+                res.push(0);
+            }
+            return res;
+        })();
         option = {
             backgroundColor: 'rgb(40, 44, 52)',
             color: colors,
@@ -89,7 +101,8 @@
                 }
             },
             grid: {
-                right: '20%'
+                right: '20%',
+                left: '20%'
             },
             toolbox: {
                 feature: {
@@ -101,12 +114,13 @@
                         show: false
                     },
                     saveAsImage: {
-                        show: true
+                        show: false
                     }
                 }
             },
             legend: {
                 data: [
+                    'Pump_Output',
                     'Pipe_Pres',
                     'Ambient_Pres',
                     'Pipe_Temp',
@@ -116,9 +130,7 @@
                 ]
             },
             dataZoom: {
-                show: true,
-                start: 0,
-                end: 600
+                show: true
             },
             xAxis: [{
                 type: 'category',
@@ -173,9 +185,32 @@
                     axisLabel: {
                         formatter: '{value} hPa'
                     }
+                },
+                {
+                    type: 'value',
+                    name: '泵PWM',
+                    position: 'left',
+                    offset: 80,
+                    alignTicks: false,
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: colors[3]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
                 }
             ],
             series: [{
+                    name: 'Pump_Output',
+                    yAxisIndex: 3,
+                    type: 'bar',
+                    color: colors[3],
+                    data: data_Pump_Output
+                },
+                {
                     name: 'Pipe_Pres',
                     yAxisIndex: 0,
                     type: 'line',
@@ -233,26 +268,26 @@
         };
 
         function updata(str_vale) {
-            let axisData = new Date().toLocaleTimeString('chinese',{ hour12: false }).replace(/^\D*/, '');
-            if(data_Pipe_Pres.length>180){data_Pipe_Pres.shift();}
+            let axisData = new Date().toLocaleTimeString('chinese', {
+                hour12: false
+            }).replace(/^\D*/, '');
             data_Pipe_Pres.push(str_vale["data_Pipe_Pres"][0]);
-            if(data_Ambient_Pres.length>180){data_Ambient_Pres.shift();}
             data_Ambient_Pres.push(str_vale["data_Ambient_Pres"][0]);
-            if(data_Pipe_Temp.length>180){data_Pipe_Temp.shift();}
             data_Pipe_Temp.push(str_vale["data_Pipe_Temp"][0]);
-            if(data_Chip_Temp.length>180){data_Chip_Temp.shift();}
             data_Chip_Temp.push(str_vale["data_Chip_Temp"][0]);
-            if(data_Current_nPressure.length>180){data_Current_nPressure.shift();}
             data_Current_nPressure.push(str_vale["data_Current_nPressure"][0]);
-            if(data_Set_nPressure.length>180){data_Set_nPressure.shift();}
             data_Set_nPressure.push(str_vale["data_Set_nPressure"][0]);
-            if(categories.length>180){categories.shift();}
+            data_Pump_Output.push(str_vale["data_Pump_Output"][0]);
             categories.push(axisData);
             myChart.setOption({
                 xAxis: [{
                     data: categories
                 }],
-                series: [{
+                series: [
+                    {
+                        data: data_Pump_Output
+                    },
+                    {
                         data: data_Pipe_Pres
                     },
                     {
