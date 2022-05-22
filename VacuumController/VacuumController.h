@@ -79,6 +79,7 @@ public:
     float output_manual; //手动输出值
     float deltak; //手动输出值
     unsigned char pid_mode;			//pid模式：0为积分分离pid，1为模糊pid
+    unsigned char control_time;			//控制周期
     unsigned short int safeEvent_status;			//安全警告
     int WriteData_Enable;
     int File_isClose;

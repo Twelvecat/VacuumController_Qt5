@@ -65,6 +65,7 @@ void VacuumController::Init(void)
     output_value = 0;
     output_manual = 0;
     pid_mode = 0;
+    control_time = 0;
     safeEvent_status  = 0;
     WriteData_Enable = 0;
     File_isClose = 1;

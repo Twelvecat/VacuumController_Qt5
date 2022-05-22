@@ -188,8 +188,13 @@ void TOUCH_deal_82command(VacuumController *QtSystem, uint8_t *p_Cmdbuf)
     {
         QtSystem->pid_mode = p_Cmdbuf[7];
         if(QtSystem->pid_mode==0)printf("pid_mode:PID\n");
-        else if(QtSystem->pid_mode=10)printf("pid_mode:fuzzyPID\n");
+        else if(QtSystem->pid_mode==1)printf("pid_mode:fuzzyPID\n");
         else printf("pid_mode:ERROR\n");
+    }
+    else if(UIaddr_contorl_time == command_adds)
+    {
+        QtSystem->control_time = p_Cmdbuf[7];
+        printf("control_time:%dms\n",QtSystem->control_time*200);
     }
     else if(UIaddr_pid_p == command_adds)
     {

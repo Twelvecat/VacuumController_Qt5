@@ -15,7 +15,11 @@ DebugPID::DebugPID(QWidget *parent) :
     ui->label_ki->setStyleSheet("color: #EAEBEB;");
     ui->label_kd->setStyleSheet("color: #EAEBEB;");
     ui->label_deltak->setStyleSheet("color: #EAEBEB;");
+    ui->label_controlt->setStyleSheet("color: #EAEBEB;");
     ui->lineEdit_mode->setStyleSheet("\
+        QLineEdit{border-radius: 5px;background: #464C59;color:#EAEBEB;}\
+    ");
+    ui->lineEdit_controlt->setStyleSheet("\
         QLineEdit{border-radius: 5px;background: #464C59;color:#EAEBEB;}\
     ");
     ui->lineEdit_kp->setStyleSheet("\
@@ -114,17 +118,21 @@ void DebugPID::showpid()
         QString deltak = QString("%1").arg(QtSystem.deltak);
         ui->lineEdit_deltak->setText(deltak);
     }
+    if(!ui->lineEdit_controlt->hasFocus()){
+        QString controlt = QString("%1").arg(QtSystem.control_time);
+        ui->lineEdit_controlt->setText(controlt);
+    }
 }
 
 void DebugPID::on_pushButton_Upload_clicked()
 {
-    sendCmd(0x0095,0x0001,1);
+    sendCmd(UIaddr_pid_updata,0x0001,1);
     pidtimer->start(500);
 }
 
 void DebugPID::on_pushButton_flash_clicked()
 {
-    sendCmd(0x0095,0x0101,1);
+    sendCmd(UIaddr_pid_updata,0x0101,1);
 }
 
 void DebugPID::on_pushButton_Download_clicked()
@@ -148,5 +156,9 @@ void DebugPID::on_pushButton_Download_clicked()
 
     double deltak = ui->lineEdit_deltak->text().toDouble();
     sendCmd(UIaddr_pid_delta_k,deltak,1000);
+    Delay_MSec(200);
+
+    double controlTime = ui->lineEdit_controlt->text().toDouble();
+    sendCmd(UIaddr_contorl_time,controlTime,1);
     Delay_MSec(200);
 }
