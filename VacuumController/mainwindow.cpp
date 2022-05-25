@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     QStringList list_parm= QCoreApplication::arguments();
     if(list_parm.size() > 1)
     {
-        if(list_parm[1] == "--debug" || list_parm[1] == "-D" || list_parm[1] == "--Debug"){
+        if(list_parm[1] == "--debug" || list_parm[1] == "-D" || list_parm[1] == "--Debug" || list_parm[1] == "-d"){
             ui->pushButton_PID->show();
         }
 
@@ -94,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
     //连接信号槽
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::socket_Read_Data);
     QObject::connect(socket, &QTcpSocket::disconnected, this, &MainWindow::socket_Disconnected);
+    socket->setProxy(QNetworkProxy::NoProxy);
     //ui->pushButton_Send->setEnabled(false);
     ui->lineEdit_IP->setText("192.168.1.1");
     ui->lineEdit_Port->setText("8080");
@@ -247,7 +248,7 @@ void MainWindow::dropEvent(QDropEvent* event)
         const QList<QUrl> urls = event->mimeData()->urls();
         QString filePath = urls.at(0).toLocalFile();
         DataView*  view= new DataView(this);
-        view->setWindowFlags(Qt::Window);
+        view->setWindowFlags(Qt::Window|Qt::FramelessWindowHint);
         view->show();
         view->GetFilePath(filePath);
 
@@ -348,7 +349,6 @@ void saveData(QString fileName){
     int i = 1;
     while(i--)
     {
-        qDebug() << "writing";
         Data[0] = round(QtSystem.hp5806_B.Pcomp*10)/10.0;
         Data[1] = round(QtSystem.hp5806_A.Pcomp*10)/10.0;
         Data[2] = round(QtSystem.hp5806_B.Tcomp*10)/10.0;
@@ -412,6 +412,7 @@ void MainWindow::updataView()
     // 状态切换
     if(!button_run_isbusy && !button_stop_isbusy){
         if(QtSystem.system_status.current == 1){
+            if(QtSystem.WriteData_Enable == 1)qDebug() << "End Recorder";
             QtSystem.WriteData_Enable = 0;
             if(ui->pushButton_Run->text() != QString::fromLocal8Bit("启动"))
             {
@@ -419,6 +420,7 @@ void MainWindow::updataView()
             }
         }
         else if(QtSystem.system_status.current == 2){
+            if(QtSystem.WriteData_Enable == 0)qDebug() << "Start Recorder";
             QtSystem.WriteData_Enable = 1;
             if(ui->pushButton_Run->text() != QString::fromLocal8Bit("暂停"))
             {
@@ -434,6 +436,7 @@ void MainWindow::updataView()
             if(ui->verticalSlider_switch->value() != 1)ui->verticalSlider_switch->setValue(1);
         }
         else if(QtSystem.system_status.current == 3){
+            if(QtSystem.WriteData_Enable == 0)qDebug() << "Start Recorder";
             QtSystem.WriteData_Enable = 1;
             if(ui->pushButton_Run->text() != QString::fromLocal8Bit("继续"))
             {
@@ -444,6 +447,7 @@ void MainWindow::updataView()
             if(ui->verticalSlider_switch->value() != 1)ui->verticalSlider_switch->setValue(1);
         }
         else if(QtSystem.system_status.current == 4){
+            if(QtSystem.WriteData_Enable == 0)qDebug() << "Start Recorder";
             QtSystem.WriteData_Enable = 1;
             if(ui->pushButton_Run->text() != QString::fromLocal8Bit("暂停"))
             {
@@ -459,6 +463,7 @@ void MainWindow::updataView()
             if(ui->verticalSlider_switch->value() != 0)ui->verticalSlider_switch->setValue(0);
         }
         else if(QtSystem.system_status.current == 5){
+            if(QtSystem.WriteData_Enable == 0)qDebug() << "Start Recorder";
             QtSystem.WriteData_Enable = 1;
             if(ui->pushButton_Run->text() != QString::fromLocal8Bit("继续"))
             {
@@ -470,12 +475,14 @@ void MainWindow::updataView()
 
         }
         else if(QtSystem.system_status.current == 6){
+            if(QtSystem.WriteData_Enable == 1)qDebug() << "End Recorder";
             QtSystem.WriteData_Enable = 0;
             QMessageBox::critical(this, QString::fromLocal8Bit("触发急停警报"),
                                   QString::fromLocal8Bit("设备机械急停按钮被触发，已关闭真空泵，终止所有任务！\n请在确保设备安全的情况下手动长按 屏幕右侧机械按键解除警报。"),
                                   QString::fromLocal8Bit("已解除"));
         }
         else if(QtSystem.system_status.current == 7){
+            if(QtSystem.WriteData_Enable == 1)qDebug() << "End Recorder";
             QtSystem.WriteData_Enable = 0;
         }
     }
@@ -689,7 +696,7 @@ void MainWindow::on_pushButton_Connect_clicked()
         socket->connectToHost(IP, port);
 
         //等待连接成功
-        if(!socket->waitForConnected(30000))
+        if(!socket->waitForConnected(3000))
         {
             qDebug() << "Connection failed!";
             return;
@@ -708,7 +715,8 @@ void MainWindow::on_pushButton_Connect_clicked()
         //修改按键文字
         ui->pushButton_Connect->setText(QString::fromLocal8Bit("连接"));
         //ui->pushButton_Send->setEnabled(false);
-        QtSystem.WriteData_Enable = 0;
+        if(QtSystem.WriteData_Enable == 1)qDebug() << "End Recorder";
+        QtSystem.WriteData_Enable = 0; 
         QtSystem.system_status.current = 1;
     }
 }
@@ -777,6 +785,7 @@ void MainWindow::socket_Disconnected()
     //修改按键文字
     ui->pushButton_Connect->setText(QString::fromLocal8Bit("连接"));
     qDebug() << "Disconnected!";
+    if(QtSystem.WriteData_Enable == 1)qDebug() << "End Recorder";
     QtSystem.WriteData_Enable = 0;
     QtSystem.system_status.current = 1;
 }

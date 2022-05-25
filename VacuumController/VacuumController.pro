@@ -8,7 +8,9 @@ RC_FILE += qtIcon.rc
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
-CONFIG += console
+CONFIG +=release
+CONFIG -= console
+# CONFIG += console
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -23,7 +25,8 @@ SOURCES += \
     mainwindow.cpp \
     message.cpp \
     messageThread.cpp \
-    savaDataThread.cpp
+    savaDataThread.cpp \
+    waterprocess.cpp
 
 HEADERS += \
     SwBtn.h \
@@ -33,7 +36,8 @@ HEADERS += \
     mainwindow.h \
     message.h \
     messageThread.h \
-    saveDataThread.h
+    saveDataThread.h \
+    waterprocess.h
 
 FORMS += \
     dataview.ui \

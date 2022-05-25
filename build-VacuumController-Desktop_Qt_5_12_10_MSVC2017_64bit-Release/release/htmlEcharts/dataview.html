@@ -18,19 +18,25 @@
         var app = {};
 
         var option;
-
+        let now = new Date();
         const colors = ['#ACDFED', '#f7f494', '#FFAB91', '#AEF3C3', '#B4C0F0'];
         const categories = (function () {
-            let now = new Date();
+            
             let res = [];
             let len = 1;
+            now.setHours(0)
+            now.setMinutes(0)
+            now.setSeconds(0)
             while (len--) {
-                res.unshift(
-                    now.toLocaleTimeString('chinese', {
+                // res.unshift(
+                //     now.toLocaleTimeString('chinese', {
+                //         hour12: false
+                //     }).replace(/^\D*/, '')
+                // );
+                // now = new Date(+now - 2000);
+                res.push(now.toLocaleTimeString('chinese', {
                         hour12: false
-                    }).replace(/^\D*/, '')
-                );
-                now = new Date(+now - 2000);
+                    }).replace(/^\D*/, ''));
             }
             return res;
         })();
@@ -268,7 +274,8 @@
         };
 
         function updata(str_vale) {
-            let axisData = new Date().toLocaleTimeString('chinese', {
+            now = new Date(+now + 1000);
+            let axisData = now.toLocaleTimeString('chinese', {
                 hour12: false
             }).replace(/^\D*/, '');
             data_Pipe_Pres.push(str_vale["data_Pipe_Pres"][0]);
@@ -307,6 +314,7 @@
                     }
                 ]
             });
+            return data_Pipe_Pres.length
         };
 
         // setInterval(function () {

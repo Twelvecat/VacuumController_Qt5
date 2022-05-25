@@ -23,6 +23,7 @@
 #include <QMimeData>
 #include "dataview.h"
 #include "debugpid.h"
+#include <QNetworkProxy>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

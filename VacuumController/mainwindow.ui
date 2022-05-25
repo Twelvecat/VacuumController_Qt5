@@ -307,6 +307,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="toolTip">
+           <string>按Enter提交输入</string>
+          </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
@@ -513,6 +516,9 @@
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="1">
          <widget class="QLineEdit" name="lineEdit_setTime">
+          <property name="toolTip">
+           <string>按Enter提交输入</string>
+          </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
@@ -640,6 +646,9 @@
       <weight>75</weight>
       <bold>true</bold>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>非专业人员请勿操作</string>
     </property>
     <property name="text">
      <string>调试</string>

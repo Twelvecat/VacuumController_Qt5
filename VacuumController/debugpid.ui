@@ -249,6 +249,9 @@
            <bold>true</bold>
           </font>
          </property>
+         <property name="toolTip">
+          <string>获取设备控制参数</string>
+         </property>
          <property name="text">
           <string>上传</string>
          </property>
@@ -270,6 +273,9 @@
            <bold>true</bold>
           </font>
          </property>
+         <property name="toolTip">
+          <string>非专业人员请勿操作</string>
+         </property>
          <property name="text">
           <string>下载</string>
          </property>
@@ -290,6 +296,9 @@
            <weight>75</weight>
            <bold>true</bold>
           </font>
+         </property>
+         <property name="toolTip">
+          <string>非专业人员请勿操作</string>
          </property>
          <property name="text">
           <string>烧录</string>
